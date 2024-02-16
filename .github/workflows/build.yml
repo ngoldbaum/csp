@@ -529,6 +529,10 @@ jobs:
             name: csp-sdist
             path: dist/
 
+        - name: Install test dependencies
+          shell: bash
+          run: sudo apt-get install graphviz
+
         # Install sdist
         - name: Install sdist
           if: ${{ needs.initialize.outputs.FULL_RUN == 'true' }}
