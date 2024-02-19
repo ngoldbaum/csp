@@ -635,9 +635,18 @@ jobs:
         - test_sdist
         - test_dependencies
 
+      # only publish artifacts on releases
+      if: startsWith(github.ref, 'refs/tags/')
+
       runs-on: ubuntu-22.04
+
+      # IMPORTANT: mandatory for GitHub -> pypi trusted publishing
       permissions:
         id-token: write
+      environment:
+        name: testpypi
+        url: https://testpypi.org/p/csp
+
       steps:
         - name: Download wheels and sdist
           uses: actions/download-artifact@v4
@@ -650,17 +659,15 @@ jobs:
           run: ls -R ./dist
 
         - name: Publish to github releases
-          uses: softprops/action-gh-release@v1
-          if: startsWith(github.ref, 'refs/tags/')
-          with:
-            draft: true
-            generate_release_notes: true
-            files: dist/*
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            TAG: ${{ github.ref_name }}
+          run: |
+            gh release create ${{ github.ref_name }} ./dist/* \
+               --repo="$GITHUB_REPOSITORY" \
+               --title="${GITHUB_REPOSITORY#*/} ${TAG#v}" \
 
         - name: Publish to testpypi
-          if: startsWith(github.ref, 'refs/tags/')
           uses: pypa/gh-action-pypi-publish@release/v1
           with:
             repository-url: https://test.pypi.org/legacy
