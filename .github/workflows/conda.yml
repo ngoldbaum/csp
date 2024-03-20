@@ -65,3 +65,7 @@ jobs:
         - name: Python Test Steps
           run: make test
           shell: micromamba-shell {0}
+
+        - name: Setup remote debugging session
+          if: ${{ failure() }}
+          uses: mxschmitt/action-tmate@v3
