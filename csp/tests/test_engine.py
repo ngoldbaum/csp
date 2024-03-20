@@ -1386,6 +1386,7 @@ class TestEngine(unittest.TestCase):
         @csp.graph
         def g(count: int) -> csp.ts[int]:
             x = csp.count(csp.timer(timedelta(seconds=0.1)))
+            print(f"g: count, x: {count} {x}")
             stop = x == count
             stop = csp.filter(stop, stop)
 
@@ -1400,7 +1401,9 @@ class TestEngine(unittest.TestCase):
         runner = csp.run_on_thread(g, 50000, starttime=datetime.utcnow(), endtime=timedelta(minutes=1), realtime=True)
         import time
 
+        print("calling sleep")
         time.sleep(1)
+        print("calling stop_engine")
         runner.stop_engine()
         res = runner.join()[0]
         self.assertLess(len(res), 20)

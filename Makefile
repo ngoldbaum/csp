@@ -83,7 +83,7 @@ checks: check
 
 TEST_ARGS :=
 test-py: ## Clean and Make unit tests
-	python -m pytest -v csp/tests --junitxml=junit.xml $(TEST_ARGS)
+	python -m pytest -sv csp/tests --junitxml=junit.xml $(TEST_ARGS)
 
 coverage-py:
 	python -m pytest -v csp/tests --junitxml=junit.xml --cov=csp --cov-report xml --cov-report html --cov-branch --cov-fail-under=80 --cov-report term-missing $(TEST_ARGS)

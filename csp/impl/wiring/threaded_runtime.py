@@ -21,6 +21,7 @@ class _EngineStopSignalImpl(PushInputAdapter):
         self._pusher.unregister_impl()
 
     def signal_stop(self):
+        print("_EngineStopSignalImpl.signal_stop called")
         self.push_tick(True)
 
 
@@ -29,19 +30,23 @@ _EngineStopSignal = py_push_adapter_def("_EngineStopSignal", _EngineStopSignalIm
 
 class _EngineStopper:
     def __init__(self):
+        print("_EngineStopper.__init__")
         self._pushimpl = None
         self._deferred_stop = False
 
     def register_impl(self, impl):
+        print(f"_EngineStopper.register_impl: {impl}")
         self._pushimpl = impl
         # For the case where stop is called before push input was actually created on the engine thread
         if self._deferred_stop:
+            print("_EngineStopper.register_impl: signal_stop() called")
             self._pushimpl.signal_stop()
 
     def unregister_impl(self):
         self._pushimpl = None
 
     def stop_engine(self):
+        print(f"_EngineStopper.stop_engine: {self._pushimpl}")
         if self._pushimpl is not None:
             self._pushimpl.signal_stop()
         else:

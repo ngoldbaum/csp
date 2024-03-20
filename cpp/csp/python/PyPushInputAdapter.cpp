@@ -156,6 +156,7 @@ public:
         {
             if( !validatePyType( this -> dataType(), m_pyType.ptr(), value ) )
                 CSP_THROW( TypeError, "" );
+            fprintf(stderr, "PyPushInputAdapter.pushPyTick called\n");
             pushTick<T>( std::move(fromPython<T>( value, *this -> dataType() )), batch );
         }
         catch( const TypeError & )
